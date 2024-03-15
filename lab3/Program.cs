@@ -21,7 +21,12 @@ namespace program
             List<User> wczytaniUzytkownicy = WczytajZPlikuXML("data.xml");
 
             Dictionary<string, List<string>> mojSlownik = new Dictionary<string, List<string>>();
+            
             Dictionary<string, int> licznik = new Dictionary<string, int>();
+
+            Dictionary<string, HashSet<int>> licznik2= new Dictionary<string, HashSet<int>>();
+
+            int linijka = 1;
 
             foreach (var user in wczytaniUzytkownicy)
             {
@@ -30,8 +35,13 @@ namespace program
                     mojSlownik[user.UserName] = new List<string>();
                 }
                 mojSlownik[user.UserName].AddRange(user.Text.Split(new string[] { "\" " }, StringSplitOptions.RemoveEmptyEntries));
+                
 
                 SprawdzKazdegoTweeta(licznik, user.Text);
+                
+                SprawdzTweety(licznik2, user.Text, linijka);
+
+                linijka++;
             }
 
             NajstarszyTweet(wczytaniUzytkownicy);
@@ -46,9 +56,9 @@ namespace program
             int count = 0;
             foreach(var pair in posortowanyLicznik)
             {
-                if(pair.Key.Length > 5)
+                if(pair.Key.Length >= 5)
                 {
-                    Console.WriteLine($"{pair.Key} : {pair.Value}");
+                    //Console.WriteLine($"{pair.Key} : {pair.Value}");
                     count++;
 
                     if(count == 10)
@@ -56,6 +66,16 @@ namespace program
                         break;
                     }
                 }
+            }
+
+            var posortowanyLicznik2 = licznik2.OrderByDescending(pair => pair.Value.Count);
+            var posortowanySłownik2 = posortowanyLicznik2.ToDictionary(pair => pair.Key, pair => pair.Value);
+            
+            Console.WriteLine("\n----------\n");
+
+           foreach(var pair in posortowanySłownik2.Take(10))
+            {
+                Console.WriteLine($"{pair.Key} : {pair.Value.Count}");
             }
         }
 
@@ -124,13 +144,16 @@ namespace program
             }
             Console.WriteLine("Najnowszy tweet został opublikowany: " + newest.ToString(formatDaty));
         }
-
         static Dictionary<string, int> SprawdzKazdegoTweeta(Dictionary<string, int> licznik, string text)
         {
-            string [] words = text.Split(new char [] {' ', '.', ',', ':', '!', '?', '-', ')', '('}, StringSplitOptions.RemoveEmptyEntries);
+            string [] words = text.Split(new char [] {' ', '.', ',', ':', '!', '?', '-', ')', '(', '[', ']'}, StringSplitOptions.RemoveEmptyEntries);
             
             foreach(string word in words)
             {
+                if(word == "https")
+                {
+                    break;
+                }
                 if(!licznik.ContainsKey(word))
                 {
                     licznik[word]=1;
@@ -140,6 +163,24 @@ namespace program
                 }
             }
             return licznik;
+        }
+        static Dictionary<string, HashSet<int>> SprawdzTweety(Dictionary<string, HashSet<int>> licznik2, string text, int linijka){
+            string [] words = text.Split(new char [] {' ', '.', ',', ':', '!', '?', '-', ')', '(', '[', ']'}, StringSplitOptions.RemoveEmptyEntries);
+            
+            foreach(string word in words)
+            {
+                if(word == "https")
+                {
+                    break;
+                }
+
+                if(!licznik2.ContainsKey(word))
+                {
+                    licznik2[word]=new HashSet<int>();
+                }
+                licznik2[word].Add(linijka);
+            }
+            return licznik2;
         }
     }
 }

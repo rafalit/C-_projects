@@ -17,15 +17,15 @@ Celem laboratorium jest zapoznanie z metodami programowania przy użyciu kolekcj
 
 2. [1 punkt] Napisz funkcję, która pozwoli na przekonwertowanie wczytanych w punkcie 1 danych do formatu XML. Funkcja ma pozwalać zarówno na zapis do pliku w formacie XML danych o tweetach jak i wczytanie tych danych z pliku.    
 
-3. [1 punkt] Napisz funkcję sortujące tweety po nazwie uĹźytkowników jak i funkcję sortującą użytkowników po dacie utworzenie tweetu.
+3. [1 punkt] Napisz funkcję sortujące tweety po nazwie użytkowników jak i funkcję sortującą użytkowników po dacie utworzenie tweetu.
 
 4. [1 punkt] Wypisz najnowszy i najstarszy tweet znaleziony względem daty jego utworzenia.
 
-5. [1 punkt] StwĂłrz słownik, ktĂłry będzie indeksowany po username i będzie przechowywał jako listę tweety użytkownika o danym username.
+5. [1 punkt] Stwórz słownik, który będzie indeksowany po username i będzie przechowywał jako listę tweety użytkownika o danym username.
 
 6. [1 punkt] Oblicz częstość występowania słów, które są w treści tweetów (w polu TEXT).
 
-7. [2 punkty] Znajdź i wypisz 10 najczęściej występujących w tweetach wyrazĂłw o długości co najmniej 5 liter.
+7. [2 punkty] Znajdź i wypisz 10 najczęściej występujących w tweetach wyrazów o długości co najmniej 5 liter.
 
 8. [2 punkty] Policz IDF dla wszystkich słów w tweetach zgodnie z definicją podaną http://www.tfidf.com/ Posortuj IDF malejąco i wypisz 10 wyrazów o największej wartości IDF.
 

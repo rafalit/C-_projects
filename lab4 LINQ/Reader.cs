@@ -10,7 +10,7 @@ namespace lab
         {
             List<T> resultList = new List<T>();
 
-            string[] lines = File.ReadAllLines(path);
+            string[] lines = File.ReadAllLines(path).Skip(1).ToArray();
 
             foreach(var line in lines)
             {

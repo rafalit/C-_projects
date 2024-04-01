@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace lab
 {
@@ -6,8 +7,20 @@ namespace lab
     {
         public string orderId{get; set;}
         public string productId{get; set;}
-        public string unitPrice{get; set;}
-        public string quantity{get; set;}
-        public string discount{get; set;} 
+        public double unitPrice{get; set;}
+        public double quantity{get; set;}
+        public double discount{get; set;} 
+
+        public static OrderDetails MapCsvToModel(string[] values)
+        {
+            return new OrderDetails
+            {
+                orderId = values[0],
+                productId = values[1],
+                unitPrice = double.Parse(values[2], CultureInfo.InvariantCulture),
+                quantity = double.Parse(values[3], CultureInfo.InvariantCulture),
+                discount = double.Parse(values[4], CultureInfo.InvariantCulture)
+            };
+        }
     }
 }

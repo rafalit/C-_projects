@@ -5,7 +5,7 @@ class Program
 {
     void ex3()
     {
-        Search search = new Search("./", "Napisz");
+        Search search = new Search("./files", "Demons");
         search.Begin();
     }
 

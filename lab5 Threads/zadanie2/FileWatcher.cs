@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace FileWatcher
@@ -21,13 +22,13 @@ namespace FileWatcher
 
             var watcher = new FileSystemWatcher(path);
             watcher.IncludeSubdirectories = false;
-            watcher.EnableRaisingEvents = false;
+            watcher.EnableRaisingEvents = true;
             watcher.Created += (sender, e) => Console.WriteLine($"Created: {e.Name}");
             watcher.Deleted += (sender, e) => Console.WriteLine($"Deleted: {e.Name}");
             watcher.Changed += (sender, e) => Console.WriteLine($"Changed: {e.Name}");
             watcher.Renamed += (sender, e) => Console.WriteLine($"Renamed: {e.OldName} -> {e.Name}");
-
-            Thread thread = new Thread(() =>
+            
+            thread = new Thread(() =>
             {
                 Console.WriteLine("here");
                 while(true)

@@ -66,6 +66,8 @@ namespace lab5
                         data.RemoveAt(0);
                         int producerNumber = consumedData % data.Count;
 
+                        Console.WriteLine($"PR {producerNumber} - CO {number}, DA {consumedData}");
+
                         if (!consumedCounts.ContainsKey(producerNumber))
                         {
                             consumedCounts[producerNumber] = new Dictionary<int, int>();

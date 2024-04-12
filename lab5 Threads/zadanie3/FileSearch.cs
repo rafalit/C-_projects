@@ -28,7 +28,7 @@ namespace FileSearch
         public void SearchFiles(string dirPath, string searchStr)
         {
             foreach(string filePath in Directory.GetFiles(dirPath, "*", SearchOption.AllDirectories))
-            {
+            {         
                 if(Path.GetFileName(filePath).Contains(searchStr))
                 {
                     Console.WriteLine(filePath);

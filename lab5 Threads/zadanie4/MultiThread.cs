@@ -52,7 +52,7 @@ namespace MultiThread
             while(Interlocked.Read(ref active_threads) > 0)
             {
                 WaitHandle.SignalAndWait(EWHworker, EWHManager);
-                Console.WriteLine("blah blah");
+                Console.WriteLine("blah blah " + active_threads);
             }
 
             System.Console.WriteLine("All threads finished!");

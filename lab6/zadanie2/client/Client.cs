@@ -28,7 +28,6 @@ public class Client
         var responseSizeBuf = new byte[4];
         int received = socket.Receive(responseSizeBuf, 4, SocketFlags.None);
         int responseSize = BitConverter.ToInt32(responseSizeBuf, 0);
-
         var responseBuf = new byte[responseSize];
         int receivedTotal = 0;
         while(receivedTotal<0)

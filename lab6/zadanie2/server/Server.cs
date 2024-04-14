@@ -36,8 +36,8 @@ public class Server
         String message = Encoding.UTF8.GetString(buffer, 0, messageSize);
         Console.WriteLine(message);
         string response = "Received: " + message;
-        byte[] responseBytes = Encoding.UTF8.GetBytes(response);
 
+        byte[] responseBytes = Encoding.UTF8.GetBytes(response);
         byte[] responseSizeBytes = BitConverter.GetBytes(responseBytes.Length);
         clientSocket.Send(responseSizeBytes, SocketFlags.None);
         clientSocket.Send(responseBytes, SocketFlags.None);

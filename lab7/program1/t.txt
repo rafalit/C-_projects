@@ -1,0 +1,81 @@
+using System.Security.Cryptography;  
+using System.Text;   
+class Program  
+{  
+    static void Main()  
+    {  
+        // Stworzenie instancji klasy implementującej algorytm RSA z losową
+        // inicjalizacją klucza prywatnego i publicznego
+        RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+        // piliki, w których będą trzymane klucze
+        string filePublicKey = "publicKey.dat";
+        string filePrivateKey = "privateKey.dat";
+        string ?publicKey = null;
+        string ?privateKey = null;
+        // jeśli plik istnieje, wczytujemy go z pliku
+        if (File.Exists(filePublicKey))
+        {
+            publicKey = File.ReadAllText(filePublicKey);
+        }
+        // jeżeli plik nie istnieje, tworzymy plik z kluczem
+        else {
+            publicKey = rsa.ToXmlString(false); // false aby wziąć klucz publiczny
+            File.WriteAllText(filePublicKey, publicKey);
+        }
+        if (File.Exists(filePrivateKey))
+        {
+            privateKey = File.ReadAllText(filePrivateKey);
+        }
+        else {
+            privateKey = rsa.ToXmlString(true); // true aby wziąć klucz prywatny
+            File.WriteAllText(filePrivateKey, privateKey);   
+        }
+        // szyfrowanie danych
+        EncryptText(publicKey, "Dane zaszyfrowane przy pomocy RSA", "zaszyfrowaneDane.dat");  
+        // odszyfrowanie danych
+        Console.WriteLine("Odszyfrowanie danych: " + DecryptData(privateKey, "zaszyfrowaneDane.dat"));   
+
+    }  
+
+    // Utwórz metodę szyfrowania tekstu i zapisywania go do określonego pliku przy użyciu klucza publicznego algorytmu RSA   
+    static void EncryptText(string kluczPubliczny ,string tekst,string nazwaPliku)  
+    {  
+        // Zmień text na tablicę bajtów   
+        UnicodeEncoding byteConverter = new UnicodeEncoding();  
+        byte[] daneDoZaszyfrowania = byteConverter.GetBytes(tekst);  
+
+        // Utwórz tablicę bajtów, aby przechowywać w niej zaszyfrowane dane   
+        byte[] zaszyfrowaneDane;   
+        using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())  
+        {  
+            // Ustaw publiczny klicz RSA   
+            rsa.FromXmlString(kluczPubliczny);  
+            // Zaszyfruj dane in wstaw je do tabicy zaszyfrowaneDane
+            zaszyfrowaneDane = rsa.Encrypt(daneDoZaszyfrowania, false);   
+        }  
+        // Zapisz zaszyfrowaną tablicę danych do pliku   
+        File.WriteAllBytes(nazwaPliku, zaszyfrowaneDane);  
+
+        Console.WriteLine("Dane zostały zaszyfrowane");   
+    }  
+
+    // Metoda odszyfrowania danych w określonym pliku przy użyciu klucza prywatnego algorytmu RSA   
+    static string DecryptData(string privateKey,string fileName)  
+    {  
+        // odczytanie zaszyfrowanych bajtów z pliku   
+        byte[] daneDoOdszyfrowania = File.ReadAllBytes(fileName);  
+
+        // Create an array to store the decrypted data in it   
+        byte[] odszyfrowaneDane;  
+        using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())  
+        {  
+            // Set the private key of the algorithm   
+            rsa.FromXmlString(privateKey);  
+            odszyfrowaneDane = rsa.Decrypt(daneDoOdszyfrowania, false);   
+        }  
+
+        // Get the string value from the decryptedData byte array   
+        UnicodeEncoding byteConverter = new UnicodeEncoding();  
+        return byteConverter.GetString(odszyfrowaneDane);   
+    }  
+}  

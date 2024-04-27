@@ -138,5 +138,104 @@ namespace SQL
             } 
             return (columnTypes, allowNull);
         }
-    }
+
+        public void CreateTable((List<Type> columnTypes, List<bool>allowNull) columnInfo, string name, SqliteConnection connection)
+        {
+            var columnTypes = columnInfo.columnTypes;
+            var allowNull = columnInfo.allowNull;
+
+            SqliteCommand delTableCmd = connection.CreateCommand();
+            delTableCmd.CommandText = "DROP TABLE IF EXISTS " + name;
+            delTableCmd.ExecuteNonQuery();
+
+            string createTableQuery = "CREATE TABLE " + name + " (";
+
+            for(int i=0; i<columnTypes.Count; i++)
+            {
+                createTableQuery += $"{columnInfo.header[i]}";
+
+                if(columnTypes[i] == typeof(int))
+                {
+                    createTableQuery += "INTEGER ";
+                }
+                else if(columnTypes[i] == typeof(double))
+                {
+                    createTableQuery += "REAL ";
+                }
+                else
+                {
+                    createTableQuery += "TEXT ";
+                }
+
+                if(!allowNull[i])
+                {
+                    createTableQuery += "NOT NULL ";
+                }
+
+                if(i<columnTypes.Count - 1)
+                {
+                    createTableQuery += ",";
+                }
+            }
+            createTableQuery += ");";
+        }
+
+        public void insertData(List<List>?object> data, string name, SqliteConnection connection)
+        {
+            if(data.Count == 0)
+            {
+                Console.WriteLine("that's emtpy dagh");
+                return;
+            }
+
+            var header = data[0];
+
+            string insertQuery = $"INSERT INTO {name} ({string.Join(", ", header)}) VALUES";
+
+            for(int i=1; i<data.Count; i++)
+            {
+                var row = data[i];
+                List<string> rowValues = new List<string>();
+
+                foreach(var cell in row)
+                {
+                    if(cell == null)
+                    {
+                        rowValues.Add("NULL");
+                    }
+                    else if(cell is string)
+                    {
+                        rowValues.Add($"'{cell}'");
+                    }
+                    else
+                    {
+                        rowValues.Add(cell.ToString());
+                    }
+                }
+                insertQuery += $"({string.Join(", ", rowValues)}), ";
+            }
+            insertQuery = insertQuery.TrimEnd(',', ' ') + ";";
+        }
+        
+        public void PrintTable(string name, SqliteConnection connection)
+        {
+            SqliteCommand printCmd = connection.CreateCommand();
+            printCmd.CommandText = "SELECT * FROM " + name;
+            SqliteDataReader reader = printCmd.ExecuteReader();
+
+            for(int i=0; i<reader.FieldCount; i++)
+            {
+                Console.Write(reader.GetName(i) + " ");
+            }
+            Console.WriteLine("\n--------------");
+
+            while(reader.Read())
+            {
+                for(int i=0; i<reader.FieldCount; i++)
+                {
+                    Console.Write(reader.GetValue(i) + " | ");
+                }
+            }
+        }
+    }   
 }

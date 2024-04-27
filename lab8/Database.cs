@@ -79,6 +79,64 @@ namespace SQL
             return (data, header);
         }
 
-        
+        public (List<Type>, List<bool>) AnalyzeData((List<List<object>?> data, List<string> header) inputData)
+        {
+            var data = inputData.data;
+            var header = inputData.header;
+
+            List<Type> columnTypes = new List<Type>();
+            List<bool> allowNull = new List<bool>();
+
+            for(int i=0; i<header.Count; i++)
+            {
+                bool allNull = true;
+                bool isInt = true;
+                bool isDouble = true;
+
+                foreach(var row in data)
+                {
+                    var value = row?[i];
+
+                    if(value != null)
+                    {
+                        allNull=false;
+
+                        if(!int.TryParse(value.ToString(), out _))
+                        {
+                            isInt = false;
+                        }
+                        if(!double.TryParse(value.ToString(), out_))
+                        {
+                            isDouble = false;
+                        }
+                    }
+                }
+
+                if(allNull)
+                {
+                    columnTypes.Add(typeof(object));
+                    allowNull.Add(true);
+                }
+
+                else if(isInt)
+                {
+                    columnTypes.Add(typeof(int));
+                    allowNull.Add(false);
+                }
+
+                else if(isDouble)
+                {
+                    columnTypes.Add(typeof(double));
+                    allowNull.Add(false);
+                }
+
+                else
+                {
+                    columnTypes.Add(typeof(string));
+                    allowNull.Add(true);
+                }
+            } 
+            return (columnTypes, allowNull);
+        }
     }
 }
